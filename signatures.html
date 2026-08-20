@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signatures - ITManager</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/signatures.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>ITManager</h2>
+    </div>
+    <a href="index.html" class="sidebar-link">Tableau de bord</a>
+    <a href="tickets.html" class="sidebar-link">Tickets</a>
+    <a href="inventory.html" class="sidebar-link">Inventaire</a>
+    <a href="stock.html" class="sidebar-link">Stock</a>
+    <a href="equipment.html" class="sidebar-link">Équipement</a>
+    <a href="signatures.html" class="sidebar-link" style="color:var(--primary)">Signatures</a>
+    <a href="vault.html" class="sidebar-link">Coffre-fort</a>
+    <a href="passwords.html" class="sidebar-link">Mots de passe</a>
+    <a href="onboarding.html" class="sidebar-link">Onboarding</a>
+  </nav>
+
+  <main class="main-content">
+    <div class="topbar">
+      <h1>Signatures mail</h1>
+      <p>Créez vos signatures email</p>
+    </div>
+
+    <div class="sig-layout">
+      <div class="sig-form-section">
+        <section class="sig-section">
+          <h3>Choisir un modèle</h3>
+          <div class="template-cards" id="templateCards"></div>
+        </section>
+
+        <section class="sig-section">
+          <h3>Vos informations</h3>
+          <form id="sigForm" autocomplete="off">
+            <div class="form-group">
+              <label for="sigFullName">Nom complet</label>
+              <input type="text" id="sigFullName" placeholder="Jean Dupont">
+            </div>
+            <div class="form-group">
+              <label for="sigPosition">Poste / Titre</label>
+              <input type="text" id="sigPosition" placeholder="Technicien IT">
+            </div>
+            <div class="form-group">
+              <label for="sigDepartment">Département</label>
+              <input type="text" id="sigDepartment" placeholder="Service Informatique">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="sigPhone">Téléphone</label>
+                <input type="tel" id="sigPhone" placeholder="01 23 45 67 89">
+              </div>
+              <div class="form-group">
+                <label for="sigMobile">Mobile</label>
+                <input type="tel" id="sigMobile" placeholder="06 12 34 56 78">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="sigEmail">Email</label>
+              <input type="email" id="sigEmail" placeholder="jean.dupont@entreprise.com">
+            </div>
+            <div class="form-group">
+              <label for="sigWebsite">Site web <span class="optional">(optionnel)</span></label>
+              <input type="url" id="sigWebsite" placeholder="https://www.entreprise.com">
+            </div>
+          </form>
+          <button class="btn btn-primary" id="btnGenerate" onclick="generateSignature()">Générer</button>
+        </section>
+      </div>
+
+      <div class="sig-preview-section">
+        <section class="sig-section">
+          <h3>Aperçu</h3>
+          <div class="preview-frame" id="previewFrame">
+            <p class="preview-placeholder">Remplissez le formulaire et cliquez sur « Générer » pour voir l'aperçu.</p>
+          </div>
+        </section>
+
+        <section class="sig-section">
+          <h3>Code HTML généré</h3>
+          <textarea class="code-block" id="codeOutput" readonly rows="10" placeholder="Le code HTML apparaîtra ici..."></textarea>
+          <div class="sig-actions">
+            <button class="btn btn-secondary" onclick="copyHTML()">Copier le HTML</button>
+            <button class="btn btn-secondary" onclick="copyText()">Copier le texte</button>
+            <button class="btn btn-primary" onclick="saveSignature()">Sauvegarder</button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <section class="sig-section sig-saved-section">
+      <h3>Mes signatures sauvegardées</h3>
+      <div id="savedSignaturesList" class="saved-sig-list">
+        <p class="empty-state">Aucune signature sauvegardée.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/js/nav.js"></script>
+  <script src="assets/js/signatures.js"></script>
+</body>
+</html>

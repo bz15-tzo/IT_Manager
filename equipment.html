@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attribution &amp; Consommables — ITManager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/equipment.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <img src="assets/img/logo.svg" alt="ITManager" class="sidebar-logo" onerror="this.style.display='none'">
+        <span class="sidebar-title">ITManager</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">Navigation</div>
+        <a href="index.html" class="sidebar-link"><i class="fas fa-th-large"></i> Tableau de bord</a>
+        <a href="tickets.html" class="sidebar-link"><i class="fas fa-ticket-alt"></i> Tickets</a>
+        <a href="inventory.html" class="sidebar-link"><i class="fas fa-boxes"></i> Inventaire</a>
+        <a href="stock.html" class="sidebar-link"><i class="fas fa-warehouse"></i> Stock 5S</a>
+        <a href="equipment.html" class="sidebar-link" style="color:var(--primary)"><i class="fas fa-tools"></i> Attribution</a>
+        <div class="sidebar-section">Outils</div>
+        <a href="signatures.html" class="sidebar-link"><i class="fas fa-signature"></i> Signatures</a>
+        <a href="vault.html" class="sidebar-link"><i class="fas fa-shield-alt"></i> Coffre-fort</a>
+        <a href="passwords.html" class="sidebar-link"><i class="fas fa-key"></i> Mots de passe</a>
+        <div class="sidebar-section">RH</div>
+        <a href="onboarding.html" class="sidebar-link"><i class="fas fa-user-check"></i> Onboarding</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user" id="sidebarUser">
+          <div class="su-avatar">U</div>
+          <div class="su-info">
+            <span class="su-name">Utilisateur</span>
+            <span class="su-role">user</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="topbar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+          <span class="topbar-title">Attribution &amp; Consommables</span>
+        </div>
+        <div class="topbar-right">
+          <button class="topbar-btn" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+          <div class="user-menu">
+            <button class="user-avatar-btn" id="userAvatarBtn">U</button>
+            <div class="user-dropdown" id="userDropdown">
+              <div class="user-dropdown-header"><strong id="dropdownName">Utilisateur</strong><span id="dropdownEmail"></span></div>
+              <div class="dropdown-divider"></div>
+              <a href="profile.html" class="dropdown-item"><i class="fas fa-user"></i> Mon profil</a>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <div class="page-header">
+          <div><h1>Attribution &amp; Consommables</h1><p>Gestion du matériel et des consommables</p></div>
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card">
+            <div class="stat-icon blue"><i class="fas fa-laptop"></i></div>
+            <div><span class="stat-number" id="sTotal">0</span><span class="stat-label">Total matériel</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon cyan"><i class="fas fa-handshake"></i></div>
+            <div><span class="stat-number" id="sAttributed">0</span><span class="stat-label">Attribués</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+            <div><span class="stat-number" id="sAvailable">0</span><span class="stat-label">Disponibles</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon red"><i class="fas fa-exclamation-circle"></i></div>
+            <div><span class="stat-number" id="sOverdue">0</span><span class="stat-label">Retards</span></div>
+          </div>
+        </div>
+
+        <div class="tab-bar" id="tabBar">
+          <button class="tab-btn active" onclick="switchTab('attributions')"><i class="fas fa-exchange-alt"></i> Attributions</button>
+          <button class="tab-btn" onclick="switchTab('consommables')"><i class="fas fa-box-open"></i> Consommables</button>
+        </div>
+
+        <div class="tab-panel active" id="panel-attributions">
+          <div class="filter-bar" id="attrFilterBar">
+            <input type="text" id="attrSearch" placeholder="Rechercher un équipement...">
+            <select id="attrStatusFilter">
+              <option value="">Tous les statuts</option>
+              <option value="available">Disponible</option>
+              <option value="attributed">Attribué</option>
+              <option value="returned">Retourné</option>
+              <option value="maintenance">Maintenance</option>
+            </select>
+            <div style="flex:1"></div>
+            <button class="btn btn-primary" onclick="openAssignModal()"><i class="fas fa-plus"></i> Attribuer</button>
+          </div>
+          <div class="card">
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Nom</th>
+                    <th>Série</th>
+                    <th>Catégorie</th>
+                    <th>Statut</th>
+                    <th>Assigné à</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="equipmentTableBody">
+                  <tr><td colspan="6" class="empty-state"><i class="fas fa-laptop"></i><p>Chargement...</p></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div id="equipmentEmptyState" class="empty-state" style="display:none">
+              <i class="fas fa-laptop"></i>
+              <p>Aucun équipement trouvé</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="panel-consommables">
+          <div class="filter-bar" id="consFilterBar">
+            <input type="text" id="consSearch" placeholder="Rechercher un consommable...">
+            <div style="flex:1"></div>
+            <button class="btn btn-primary" onclick="openCreateConsumable()"><i class="fas fa-plus"></i> Nouveau</button>
+          </div>
+          <div class="card">
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Nom</th>
+                    <th>Référence</th>
+                    <th>Quantité</th>
+                    <th>Unité</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="consumablesTableBody">
+                  <tr><td colspan="5" class="empty-state"><i class="fas fa-box-open"></i><p>Chargement...</p></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div id="consumablesEmptyState" class="empty-state" style="display:none">
+              <i class="fas fa-box-open"></i>
+              <p>Aucun consommable trouvé</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="assignModal">
+    <div class="modal">
+      <div class="modal-title" id="assignModalTitle">Attribuer un équipement</div>
+      <form id="assignForm" onsubmit="submitAssign(event)">
+        <input type="hidden" id="assignEquipmentId">
+        <div class="form-group">
+          <label for="assignEquipment">Équipement *</label>
+          <select id="assignEquipment" required></select>
+        </div>
+        <div class="form-group">
+          <label for="assignEmployee">Employé *</label>
+          <select id="assignEmployee" required></select>
+        </div>
+        <div class="form-group">
+          <label for="assignReturnDate">Date de retour prévue</label>
+          <input type="date" id="assignReturnDate">
+        </div>
+        <div class="form-group">
+          <label for="assignNotes">Notes</label>
+          <textarea id="assignNotes" rows="3"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" onclick="closeModal('assignModal')">Annuler</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="returnModal">
+    <div class="modal">
+      <div class="modal-title">Retourner l'équipement</div>
+      <form id="returnForm" onsubmit="submitReturn(event)">
+        <input type="hidden" id="returnAttributionId">
+        <p id="returnEquipmentInfo" style="margin-bottom:1rem;color:var(--text-secondary)"></p>
+        <div class="form-group">
+          <label for="returnCondition">État du matériel</label>
+          <textarea id="returnCondition" rows="3" placeholder="Décrivez l'état du matériel lors du retour..."></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" onclick="closeModal('returnModal')">Annuler</button>
+          <button type="submit" class="btn btn-secondary"><i class="fas fa-undo"></i> Confirmer le retour</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="equipmentDetailModal">
+    <div class="modal">
+      <div class="modal-title" id="detailModalTitle">Détail de l'équipement</div>
+      <div id="detailModalBody"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" onclick="closeModal('equipmentDetailModal')">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="consumableFormModal">
+    <div class="modal">
+      <div class="modal-title" id="consFormTitle">Nouveau consommable</div>
+      <form id="consForm" onsubmit="submitConsumable(event)">
+        <input type="hidden" id="consId">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="consName">Nom *</label>
+            <input type="text" id="consName" required>
+          </div>
+          <div class="form-group">
+            <label for="consReference">Référence</label>
+            <input type="text" id="consReference">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="consQuantity">Quantité</label>
+            <input type="number" id="consQuantity" min="0" value="0">
+          </div>
+          <div class="form-group">
+            <label for="consMinQuantity">Seuil minimum</label>
+            <input type="number" id="consMinQuantity" min="0" value="5">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="consUnit">Unité</label>
+          <input type="text" id="consUnit" value="pcs">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" onclick="closeModal('consumableFormModal')">Annuler</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="consumableUseModal">
+    <div class="modal">
+      <div class="modal-title" id="consUseTitle">Utiliser un consommable</div>
+      <form id="consUseForm" onsubmit="submitConsumableUse(event)">
+        <input type="hidden" id="useConsumableId">
+        <p id="useConsumableInfo" style="margin-bottom:1rem;color:var(--text-secondary)"></p>
+        <div class="form-group">
+          <label for="useEmployee">Employé *</label>
+          <select id="useEmployee" required></select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="useQuantity">Quantité *</label>
+            <input type="number" id="useQuantity" min="1" value="1" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="useNotes">Notes</label>
+          <textarea id="useNotes" rows="3"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" onclick="closeModal('consumableUseModal')">Annuler</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/db.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/nav.js"></script>
+  <script src="assets/js/equipment.js"></script>
+</body>
+</html>

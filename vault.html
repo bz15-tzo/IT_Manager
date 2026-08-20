@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coffre-fort — ITManager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/vault.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <img src="assets/img/logo.svg" alt="ITManager" class="sidebar-logo" onerror="this.style.display='none'">
+        <span class="sidebar-title">ITManager</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">Navigation</div>
+        <a href="index.html" class="sidebar-link"><i class="fas fa-th-large"></i> Tableau de bord</a>
+        <a href="tickets.html" class="sidebar-link"><i class="fas fa-ticket-alt"></i> Tickets</a>
+        <a href="inventory.html" class="sidebar-link"><i class="fas fa-boxes"></i> Inventaire</a>
+        <a href="stock.html" class="sidebar-link"><i class="fas fa-warehouse"></i> Stock 5S</a>
+        <a href="equipment.html" class="sidebar-link"><i class="fas fa-tools"></i> Attribution</a>
+        <div class="sidebar-section">Outils</div>
+        <a href="signatures.html" class="sidebar-link"><i class="fas fa-signature"></i> Signatures</a>
+        <a href="vault.html" class="sidebar-link" style="color:var(--primary)"><i class="fas fa-shield-alt"></i> Coffre-fort</a>
+        <a href="passwords.html" class="sidebar-link"><i class="fas fa-key"></i> Mots de passe</a>
+        <div class="sidebar-section">RH</div>
+        <a href="onboarding.html" class="sidebar-link"><i class="fas fa-user-check"></i> Onboarding</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user" id="sidebarUser">
+          <div class="su-avatar">U</div>
+          <div class="su-info">
+            <span class="su-name">Utilisateur</span>
+            <span class="su-role">user</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="topbar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+          <span class="topbar-title">Coffre-fort</span>
+        </div>
+        <div class="topbar-right">
+          <button class="topbar-btn" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+          <div class="user-menu">
+            <button class="user-avatar-btn" id="userAvatarBtn">U</button>
+            <div class="user-dropdown" id="userDropdown">
+              <div class="user-dropdown-header"><strong id="dropdownName">Utilisateur</strong><span id="dropdownEmail"></span></div>
+              <div class="dropdown-divider"></div>
+              <a href="profile.html" class="dropdown-item"><i class="fas fa-user"></i> Mon profil</a>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <div class="page-header">
+          <div><h1>Coffre-fort</h1><p>Stockage sécurisé d'informations confidentielles</p></div>
+        </div>
+
+        <div class="lock-screen" id="lockScreen">
+          <div class="lock-card">
+            <div class="lock-icon-wrap">
+              <i class="fas fa-shield-alt lock-icon"></i>
+            </div>
+            <h2 class="lock-title" id="lockTitle">Déverrouiller le coffre-fort</h2>
+            <p class="lock-subtitle" id="lockSubtitle">Entrez le mot de passe maître pour accéder à vos données</p>
+            <form id="lockForm" onsubmit="handleLockSubmit(event)">
+              <div class="form-group">
+                <label for="masterPasswordInput">Mot de passe maître</label>
+                <div class="password-field">
+                  <input type="password" id="masterPasswordInput" placeholder="Entrez le mot de passe maître" required autocomplete="off">
+                  <button type="button" class="password-toggle" onclick="toggleMasterPassword()">
+                    <i class="fas fa-eye" id="masterPasswordToggleIcon"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="form-group" id="confirmPasswordGroup" style="display:none">
+                <label for="confirmPasswordInput">Confirmer le mot de passe</label>
+                <div class="password-field">
+                  <input type="password" id="confirmPasswordInput" placeholder="Confirmez le mot de passe" autocomplete="off">
+                  <button type="button" class="password-toggle" onclick="toggleConfirmPassword()">
+                    <i class="fas fa-eye" id="confirmPasswordToggleIcon"></i>
+                  </button>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-lg lock-btn" id="lockBtn">
+                <i class="fas fa-lock"></i> <span id="lockBtnText">Déverrouiller</span>
+              </button>
+            </form>
+            <p class="lock-error" id="lockError" style="display:none"></p>
+          </div>
+        </div>
+
+        <div class="vault-main" id="vaultMain" style="display:none">
+          <div class="vault-toolbar">
+            <div class="vault-toolbar-left">
+              <h2>Mes entrées</h2>
+              <span class="vault-entry-count" id="entryCount">0 entrées</span>
+            </div>
+            <div class="vault-toolbar-right">
+              <button class="btn btn-outline btn-sm" onclick="lockVault()"><i class="fas fa-lock"></i> Verrouiller</button>
+            </div>
+          </div>
+
+          <div class="filter-bar">
+            <input type="text" id="vaultSearch" placeholder="Rechercher...">
+            <select id="vaultCategoryFilter">
+              <option value="">Toutes les catégories</option>
+            </select>
+            <div style="flex:1"></div>
+            <button class="btn btn-primary" onclick="openEntryModal()"><i class="fas fa-plus"></i> Nouvelle entrée</button>
+          </div>
+
+          <div class="category-tabs" id="categoryTabs">
+            <button class="category-tab active" data-category="" onclick="filterByCategory('')">
+              <i class="fas fa-th"></i> Toutes
+            </button>
+          </div>
+
+          <div class="entries-grid" id="entriesGrid">
+            <div class="empty-state">
+              <i class="fas fa-shield-alt"></i>
+              <p>Aucune entrée dans le coffre-fort</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="viewEntryModal">
+    <div class="modal">
+      <div class="modal-title" id="viewEntryTitle">Détails de l'entrée</div>
+      <div class="view-entry-content">
+        <div class="form-group">
+          <label>Titre</label>
+          <div class="view-field" id="viewTitle">—</div>
+        </div>
+        <div class="form-group">
+          <label>Utilisateur</label>
+          <div class="view-field-row">
+            <div class="view-field" id="viewUsername">—</div>
+            <button class="btn btn-ghost btn-sm copy-btn" onclick="copyField('username')"><i class="fas fa-copy"></i></button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Mot de passe</label>
+          <div class="view-field-row">
+            <div class="password-field">
+              <div class="view-field password-masked" id="viewPassword">••••••••</div>
+              <button type="button" class="password-toggle" onclick="toggleViewPassword()">
+                <i class="fas fa-eye" id="viewPasswordToggleIcon"></i>
+              </button>
+            </div>
+            <button class="btn btn-ghost btn-sm copy-btn" onclick="copyField('password')"><i class="fas fa-copy"></i></button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>URL</label>
+          <div class="view-field-row">
+            <div class="view-field" id="viewUrl">—</div>
+            <button class="btn btn-ghost btn-sm copy-btn" id="viewUrlCopy" onclick="copyField('url')" style="display:none"><i class="fas fa-copy"></i></button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Catégorie</label>
+          <div class="view-field" id="viewCategory">—</div>
+        </div>
+        <div class="form-group">
+          <label>Notes</label>
+          <div class="view-field view-field-notes" id="viewNotes">—</div>
+        </div>
+        <div class="view-meta">
+          <span id="viewMetaInfo">—</span>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeViewEntryModal()">Fermer</button>
+        <button class="btn btn-outline" id="editEntryBtn" onclick="openEditFromView()"><i class="fas fa-edit"></i> Modifier</button>
+        <button class="btn btn-danger btn-sm" id="deleteEntryBtn" onclick="deleteCurrentEntry()"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="entryModal">
+    <div class="modal">
+      <div class="modal-title" id="entryModalTitle">Nouvelle entrée</div>
+      <form id="entryForm" onsubmit="submitEntry(event)">
+        <input type="hidden" id="entryId">
+        <div class="form-group">
+          <label for="entryTitle">Titre *</label>
+          <input type="text" id="entryTitle" required>
+        </div>
+        <div class="form-group">
+          <label for="entryCategory">Catégorie</label>
+          <select id="entryCategory"></select>
+        </div>
+        <div class="form-group">
+          <label for="entryUsername">Utilisateur</label>
+          <input type="text" id="entryUsername">
+        </div>
+        <div class="form-group">
+          <label for="entryPassword">Mot de passe</label>
+          <div class="form-inline">
+            <div class="password-field" style="flex:1">
+              <input type="password" id="entryPassword">
+              <button type="button" class="password-toggle" onclick="toggleEntryPassword()">
+                <i class="fas fa-eye" id="entryPasswordToggleIcon"></i>
+              </button>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm" onclick="generatePasswordInline()"><i class="fas fa-sync-alt"></i> Générer</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="entryUrl">URL</label>
+          <input type="url" id="entryUrl">
+        </div>
+        <div class="form-group">
+          <label for="entryNotes">Notes</label>
+          <textarea id="entryNotes" rows="3"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" onclick="closeEntryModal()">Annuler</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/db.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/nav.js"></script>
+  <script src="assets/js/vault.js"></script>
+</body>
+</html>

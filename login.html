@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion — ITManager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    .auth-page { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+    .auth-card { width: 100%; max-width: 420px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 40px 36px; }
+    .auth-logo { text-align: center; margin-bottom: 28px; }
+    .auth-logo img { height: 48px; }
+    .auth-logo h1 { font-size: 1.4rem; font-weight: 800; margin-top: 12px; }
+    .auth-logo p { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+    .auth-error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); color: var(--danger); padding: 10px 14px; border-radius: var(--radius-sm); font-size: 0.85rem; margin-bottom: 16px; display: none; }
+    .auth-link { text-align: center; margin-top: 20px; font-size: 0.85rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <img src="assets/img/logo.svg" alt="ITManager" onerror="this.style.display='none'">
+        <h1>ITManager</h1>
+        <p>Connectez-vous à votre compte</p>
+      </div>
+      <div class="auth-error" id="authError"></div>
+      <form id="loginForm" style="display:none;">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="email" required autocomplete="email" placeholder="vous@entreprise.com">
+        </div>
+        <div class="form-group">
+          <label>Mot de passe</label>
+          <input type="password" id="password" required autocomplete="current-password" placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;" id="loginBtn">
+          <i class="fas fa-sign-in-alt"></i> Se connecter
+        </button>
+      </form>
+      <div id="loginFooter" style="display:none;" class="auth-link">Pas encore de compte ? <a href="register.html">Créer un compte</a></div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/db.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script>
+    (async () => {
+      if (!sb) {
+        document.getElementById('authError').textContent = 'Erreur: Supabase non configuré. Vérifiez config.js';
+        document.getElementById('authError').style.display = 'block';
+        document.getElementById('loginForm').style.display = '';
+        document.getElementById('loginFooter').style.display = '';
+        return;
+      }
+
+      const { data: { session } } = await sb.auth.getSession();
+      if (session && session.user) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      document.getElementById('loginForm').style.display = '';
+      document.getElementById('loginFooter').style.display = '';
+
+      document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const errEl = document.getElementById('authError');
+        const btn = document.getElementById('loginBtn');
+        errEl.style.display = 'none';
+        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
+        try {
+          await doLogin(document.getElementById('email').value, document.getElementById('password').value);
+          window.location.href = 'index.html';
+        } catch (err) {
+          errEl.textContent = err.message;
+          errEl.style.display = 'block';
+          btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

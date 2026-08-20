@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mon profil — ITManager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <img src="assets/img/logo.svg" alt="ITManager" class="sidebar-logo" onerror="this.style.display='none'">
+        <span class="sidebar-title">ITManager</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">Navigation</div>
+        <a href="index.html" class="sidebar-link"><i class="fas fa-th-large"></i> Tableau de bord</a>
+        <a href="tickets.html" class="sidebar-link"><i class="fas fa-ticket-alt"></i> Tickets</a>
+        <a href="inventory.html" class="sidebar-link"><i class="fas fa-boxes"></i> Inventaire</a>
+        <a href="stock.html" class="sidebar-link"><i class="fas fa-warehouse"></i> Stock 5S</a>
+        <a href="equipment.html" class="sidebar-link"><i class="fas fa-tools"></i> Attribution</a>
+        <div class="sidebar-section">Outils</div>
+        <a href="signatures.html" class="sidebar-link"><i class="fas fa-signature"></i> Signatures</a>
+        <a href="vault.html" class="sidebar-link"><i class="fas fa-shield-alt"></i> Coffre-fort</a>
+        <a href="passwords.html" class="sidebar-link"><i class="fas fa-key"></i> Mots de passe</a>
+        <div class="sidebar-section">RH</div>
+        <a href="onboarding.html" class="sidebar-link"><i class="fas fa-user-check"></i> Onboarding</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user" id="sidebarUser">
+          <div class="su-avatar">U</div>
+          <div class="su-info">
+            <span class="su-name">Utilisateur</span>
+            <span class="su-role">user</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="topbar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+          <span class="topbar-title">Mon profil</span>
+        </div>
+        <div class="topbar-right">
+          <button class="topbar-btn" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+          <div class="user-menu">
+            <button class="user-avatar-btn" id="userAvatarBtn">U</button>
+            <div class="user-dropdown" id="userDropdown">
+              <div class="user-dropdown-header"><strong id="dropdownName">Utilisateur</strong><span id="dropdownEmail"></span></div>
+              <div class="dropdown-divider"></div>
+              <a href="profile.html" class="dropdown-item"><i class="fas fa-user"></i> Mon profil</a>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <div class="page-header">
+          <div><h1>Mon profil</h1><p>Gérez vos informations personnelles</p></div>
+        </div>
+        <div class="card" style="max-width:600px;">
+          <form id="profileForm">
+            <div class="form-group">
+              <label>Nom complet</label>
+              <input type="text" id="pName">
+            </div>
+            <div class="form-group">
+              <label>Département</label>
+              <input type="text" id="pDept">
+            </div>
+            <div class="form-group">
+              <label>Téléphone</label>
+              <input type="text" id="pPhone">
+            </div>
+            <div class="form-group">
+              <label>Email (compte)</label>
+              <input type="email" id="pEmail" disabled style="opacity:0.5">
+            </div>
+            <div class="form-group">
+              <label>Rôle</label>
+              <input type="text" id="pRole" disabled style="opacity:0.5">
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Enregistrer</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/db.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/nav.js"></script>
+  <script>
+    (async () => {
+      await initAuth();
+      if (!requireAuth()) return;
+      initNav();
+      const userMenuBtn = document.getElementById('userAvatarBtn');
+      const userDropdown = document.getElementById('userDropdown');
+      userMenuBtn.addEventListener('click', () => userDropdown.classList.toggle('open'));
+      document.addEventListener('click', (e) => { if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) userDropdown.classList.remove('open'); });
+      loadProfileForm();
+    })();
+
+    async function loadProfileForm() {
+      if (!currentProfile) return;
+      document.getElementById('pName').value = currentProfile.full_name || '';
+      document.getElementById('pDept').value = currentProfile.department || '';
+      document.getElementById('pPhone').value = currentProfile.phone || '';
+      document.getElementById('pEmail').value = currentUser.email;
+      document.getElementById('pRole').value = currentProfile.role || 'user';
+    }
+
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!currentProfile) return;
+      const { error } = await sb.from('employees').update({
+        full_name: document.getElementById('pName').value,
+        department: document.getElementById('pDept').value,
+        phone: document.getElementById('pPhone').value
+      }).eq('id', currentProfile.id);
+      if (error) { showToast(error.message, 'error'); return; }
+      await loadProfile();
+      showToast('Profil mis à jour', 'success');
+    });
+  </script>
+</body>
+</html>
