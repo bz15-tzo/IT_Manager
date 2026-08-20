@@ -1,0 +1,353 @@
+.lock-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 40px 20px;
+}
+
+.lock-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 40px 32px;
+  text-align: center;
+}
+
+.lock-icon-wrap {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--primary-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+}
+
+.lock-icon {
+  font-size: 2rem;
+  color: var(--primary);
+}
+
+.lock-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.lock-subtitle {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+}
+
+.lock-btn {
+  width: 100%;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.lock-error {
+  margin-top: 16px;
+  font-size: 0.85rem;
+  color: var(--danger);
+  padding: 10px;
+  background: rgba(239, 68, 68, 0.08);
+  border-radius: var(--radius-sm);
+}
+
+.vault-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.vault-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.vault-toolbar-left h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.vault-entry-count {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  background: var(--badge-bg);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.vault-toolbar-right {
+  display: flex;
+  gap: 8px;
+}
+
+.category-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.category-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.category-tab:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-glow);
+}
+
+.category-tab.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.entries-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.entry-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  transition: all var(--transition);
+  cursor: pointer;
+  position: relative;
+}
+
+.entry-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.entry-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.entry-card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  word-break: break-word;
+  flex: 1;
+  margin-right: 8px;
+}
+
+.entry-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  background: var(--primary-glow);
+  color: var(--primary);
+}
+
+.entry-card-username {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.entry-card-username i {
+  font-size: 0.75rem;
+}
+
+.entry-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+.entry-card-category {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.entry-card-date {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.entry-card-actions {
+  display: flex;
+  gap: 4px;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.entry-card:hover .entry-card-actions {
+  opacity: 1;
+}
+
+.entry-card-actions .btn {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+}
+
+.view-field {
+  padding: 10px 14px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  color: var(--text);
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.view-field-notes {
+  min-height: 80px;
+  align-items: flex-start;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+.view-field-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.view-field-row .view-field,
+.view-field-row .password-field {
+  flex: 1;
+}
+
+.view-field-row .password-field {
+  position: relative;
+}
+
+.copy-btn {
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.password-masked {
+  letter-spacing: 3px;
+  color: var(--text-muted);
+  user-select: none;
+}
+
+.view-meta {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.vault-status-locked {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--warning);
+  padding: 4px 12px;
+  background: rgba(245, 158, 11, 0.1);
+  border-radius: 20px;
+}
+
+.vault-status-unlocked {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--secondary);
+  padding: 4px 12px;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 20px;
+}
+
+.entry-card.new-entry {
+  border: 2px dashed var(--primary);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  gap: 8px;
+}
+
+.entry-card.new-entry:hover {
+  color: var(--primary);
+  background: var(--primary-glow);
+}
+
+@media (max-width: 1024px) {
+  .entries-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .entries-grid {
+    grid-template-columns: 1fr;
+  }
+  .lock-card {
+    padding: 32px 20px;
+  }
+  .vault-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .category-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+  }
+  .category-tab {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+}

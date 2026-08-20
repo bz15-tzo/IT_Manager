@@ -1,0 +1,245 @@
+.sig-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.sig-section {
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.sig-section h3 {
+  margin: 0 0 16px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text, #1e293b);
+}
+
+.template-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.template-card {
+  border: 2px solid var(--border, #e2e8f0);
+  border-radius: 10px;
+  padding: 16px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+  background: var(--card-bg, #fff);
+}
+
+.template-card:hover {
+  border-color: var(--primary, #6366f1);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+}
+
+.template-card.selected {
+  border-color: var(--primary, #6366f1);
+  background: rgba(99, 102, 241, 0.05);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.template-card .template-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+
+.template-card .template-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted, #64748b);
+}
+
+.template-card[data-template="professionnel"] {
+  border-left: 4px solid #1e40af;
+}
+
+.template-card[data-template="minimaliste"] {
+  border-left: 4px solid #059669;
+}
+
+.template-card[data-template="colore"] {
+  border-left: 4px solid #e11d48;
+}
+
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: var(--text, #1e293b);
+}
+
+.form-group .optional {
+  font-weight: 400;
+  color: var(--text-muted, #94a3b8);
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: var(--input-bg, #f8fafc);
+  color: var(--text, #1e293b);
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary, #6366f1);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.preview-frame {
+  background: #ffffff;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 8px;
+  padding: 24px;
+  min-height: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.preview-placeholder {
+  color: var(--text-muted, #94a3b8);
+  text-align: center;
+  padding: 40px 0;
+  font-size: 0.9rem;
+}
+
+.code-block {
+  width: 100%;
+  background: #1e293b;
+  color: #e2e8f0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.8rem;
+  padding: 16px;
+  border: none;
+  border-radius: 8px;
+  resize: vertical;
+  box-sizing: border-box;
+  line-height: 1.5;
+  overflow-x: auto;
+}
+
+.code-block:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+}
+
+.sig-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.sig-saved-section {
+  margin-top: 8px;
+}
+
+.saved-sig-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.saved-sig-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 10px;
+  background: var(--card-bg, #fff);
+  transition: box-shadow 0.2s;
+}
+
+.saved-sig-item:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.saved-sig-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.saved-sig-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.saved-sig-date {
+  font-size: 0.78rem;
+  color: var(--text-muted, #64748b);
+}
+
+.saved-sig-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: background 0.2s;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--text-muted, #94a3b8);
+  padding: 24px;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 900px) {
+  .sig-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .template-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .sig-actions {
+    flex-direction: column;
+  }
+
+  .sig-actions .btn {
+    width: 100%;
+  }
+}

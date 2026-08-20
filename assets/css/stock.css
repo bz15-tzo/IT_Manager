@@ -1,0 +1,82 @@
+.zone-seiri { background: rgba(239,68,68,0.12); color: #ef4444; }
+.zone-seiton { background: rgba(59,130,246,0.12); color: #3b82f6; }
+.zone-seiso { background: rgba(16,185,129,0.12); color: #10b981; }
+.zone-seiketsu { background: rgba(139,92,246,0.12); color: #8b5cf6; }
+.zone-shitsuke { background: rgba(245,158,11,0.12); color: #f59e0b; }
+
+.zone-badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 0.72rem; font-weight: 600; text-transform: capitalize;
+}
+
+.movement-in { background: rgba(16,185,129,0.12); color: #10b981; }
+.movement-out { background: rgba(239,68,68,0.12); color: #ef4444; }
+.movement-transfer { background: rgba(59,130,246,0.12); color: #3b82f6; }
+.movement-adjust { background: rgba(245,158,11,0.12); color: #f59e0b; }
+
+.audit-pending { background: var(--badge-bg); color: var(--text-muted); }
+.audit-pass { background: rgba(16,185,129,0.12); color: #10b981; }
+.audit-fail { background: rgba(239,68,68,0.12); color: #ef4444; }
+
+.stock-alert {
+  background: rgba(239,68,68,0.06);
+}
+
+.stock-alert td {
+  color: var(--danger) !important;
+}
+
+.quantity-low {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.tab-bar {
+  display: flex; gap: 4px; margin-bottom: 20px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 4px;
+}
+
+.tab-btn {
+  flex: 1; padding: 10px 16px; border: none; background: transparent;
+  color: var(--text-muted); font-size: 0.85rem; font-weight: 600;
+  border-radius: var(--radius-sm); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all var(--transition);
+}
+
+.tab-btn:hover {
+  color: var(--text); background: var(--bg-secondary);
+}
+
+.tab-btn.active {
+  background: var(--primary); color: #fff;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+.category-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 0.72rem; font-weight: 600;
+}
+
+.action-btns {
+  display: flex; gap: 4px;
+}
+
+@media (max-width: 640px) {
+  .tab-bar {
+    flex-direction: column;
+  }
+  .tab-btn {
+    justify-content: flex-start; padding: 10px 14px;
+  }
+}
