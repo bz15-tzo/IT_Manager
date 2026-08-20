@@ -1,197 +1,236 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventaire IT - ITManager</title>
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/inventory.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventaire IT — ITManager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/inventory.css">
 </head>
 <body>
-    <nav class="sidebar">
-        <div class="sidebar-header">
-            <h2>ITManager</h2>
+  <div class="app-layout">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <img src="assets/img/logo.svg" alt="ITManager" class="sidebar-logo" onerror="this.style.display='none'">
+        <span class="sidebar-title">ITManager</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-section">Navigation</div>
+        <a href="index.html" class="sidebar-link"><i class="fas fa-th-large"></i> Tableau de bord</a>
+        <a href="tickets.html" class="sidebar-link"><i class="fas fa-ticket-alt"></i> Tickets</a>
+        <a href="inventory.html" class="sidebar-link active"><i class="fas fa-boxes"></i> Inventaire</a>
+        <a href="stock.html" class="sidebar-link"><i class="fas fa-warehouse"></i> Stock 5S</a>
+        <a href="equipment.html" class="sidebar-link"><i class="fas fa-tools"></i> Attribution</a>
+        <div class="sidebar-section">Outils</div>
+        <a href="signatures.html" class="sidebar-link"><i class="fas fa-signature"></i> Signatures</a>
+        <a href="vault.html" class="sidebar-link"><i class="fas fa-shield-alt"></i> Coffre-fort</a>
+        <a href="passwords.html" class="sidebar-link"><i class="fas fa-key"></i> Mots de passe</a>
+        <div class="sidebar-section">RH</div>
+        <a href="onboarding.html" class="sidebar-link"><i class="fas fa-user-check"></i> Onboarding</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user" id="sidebarUser">
+          <div class="su-avatar">U</div>
+          <div class="su-info">
+            <span class="su-name">Utilisateur</span>
+            <span class="su-role">user</span>
+          </div>
         </div>
-        <div class="sidebar-nav">
-            <a href="index.html" class="sidebar-link">Tableau de bord</a>
-            <a href="tickets.html" class="sidebar-link">Tickets</a>
-            <a href="inventory.html" class="sidebar-link" style="color:var(--primary)">Inventaire</a>
-            <a href="stock.html" class="sidebar-link">Stock</a>
-            <a href="equipment.html" class="sidebar-link">Équipements</a>
-            <a href="signatures.html" class="sidebar-link">Signatures</a>
-            <a href="vault.html" class="sidebar-link">Coffre-fort</a>
-            <a href="passwords.html" class="sidebar-link">Mots de passe</a>
-            <a href="onboarding.html" class="sidebar-link">Onboarding</a>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="topbar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+          <span class="topbar-title">Inventaire IT</span>
         </div>
-    </nav>
-    <main class="main-content">
-        <div class="topbar">
-            <div>
-                <h1>Inventaire IT</h1>
-                <p>Gestion du parc informatique</p>
+        <div class="topbar-right">
+          <button class="topbar-btn" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+          <div class="user-menu">
+            <button class="user-avatar-btn" id="userAvatarBtn">U</button>
+            <div class="user-dropdown" id="userDropdown">
+              <div class="user-dropdown-header"><strong id="dropdownName">Utilisateur</strong><span id="dropdownEmail"></span></div>
+              <div class="dropdown-divider"></div>
+              <a href="profile.html" class="dropdown-item"><i class="fas fa-user"></i> Mon profil</a>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
             </div>
-            <div class="topbar-actions">
-                <span id="userDisplay"></span>
-                <button class="btn btn-secondary" id="logoutBtn">Déconnexion</button>
-            </div>
+          </div>
         </div>
+      </header>
+
+      <div class="page-content">
         <div class="page-header">
-            <div class="filter-bar">
-                <input type="text" id="searchInput" placeholder="Rechercher un asset..." class="form-group">
-                <select id="typeFilter" class="form-group">
-                    <option value="">Tous les types</option>
-                </select>
-                <select id="statusFilter" class="form-group">
-                    <option value="">Tous les statuts</option>
-                    <option value="available">Disponible</option>
-                    <option value="in_use">En utilisation</option>
-                    <option value="repair">En réparation</option>
-                    <option value="retired">Retiré</option>
-                </select>
-                <button class="btn btn-primary" id="newAssetBtn">Nouvel asset</button>
-            </div>
+          <div><h1>Inventaire IT</h1><p>Gestion du parc informatique</p></div>
         </div>
-        <div class="stats-row" id="statsRow">
-            <div class="stat-card">
-                <span class="stat-value" id="statTotal">0</span>
-                <span class="stat-label">Total assets</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-value" id="statInUse">0</span>
-                <span class="stat-label">En utilisation</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-value" id="statAvailable">0</span>
-                <span class="stat-label">Disponibles</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-value" id="statRepair">0</span>
-                <span class="stat-label">En réparation</span>
-            </div>
+
+        <div class="filter-bar">
+          <input type="text" id="searchInput" placeholder="Rechercher un asset...">
+          <select id="typeFilter">
+            <option value="">Tous les types</option>
+          </select>
+          <select id="statusFilter">
+            <option value="">Tous les statuts</option>
+            <option value="available">Disponible</option>
+            <option value="in_use">En utilisation</option>
+            <option value="repair">En réparation</option>
+            <option value="retired">Retiré</option>
+          </select>
+          <div style="flex:1"></div>
+          <button class="btn btn-primary" id="newAssetBtn"><i class="fas fa-plus"></i> Nouvel asset</button>
         </div>
+
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card">
+            <div class="stat-icon blue"><i class="fas fa-boxes"></i></div>
+            <div><span class="stat-number" id="statTotal">0</span><span class="stat-label">Total assets</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green"><i class="fas fa-laptop"></i></div>
+            <div><span class="stat-number" id="statInUse">0</span><span class="stat-label">En utilisation</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon cyan"><i class="fas fa-check-circle"></i></div>
+            <div><span class="stat-number" id="statAvailable">0</span><span class="stat-label">Disponibles</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange"><i class="fas fa-wrench"></i></div>
+            <div><span class="stat-number" id="statRepair">0</span><span class="stat-label">En réparation</span></div>
+          </div>
+        </div>
+
         <div class="card">
+          <div class="table-wrap">
             <table class="table">
-                <thead>
-                    <tr>
-                        <th>Asset Tag</th>
-                        <th>Nom</th>
-                        <th>Type</th>
-                        <th>Marque / Modèle</th>
-                        <th>Emplacement</th>
-                        <th>Statut</th>
-                        <th>Garantie</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="assetsTableBody"></tbody>
+              <thead>
+                <tr>
+                  <th>Asset Tag</th>
+                  <th>Nom</th>
+                  <th>Type</th>
+                  <th>Marque / Modèle</th>
+                  <th>Emplacement</th>
+                  <th>Statut</th>
+                  <th>Garantie</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="assetsTableBody"></tbody>
             </table>
-            <div id="emptyState" class="empty-state" style="display:none;">
-                <p>Aucun asset trouvé</p>
-            </div>
+          </div>
+          <div id="emptyState" class="empty-state" style="display:none;">
+            <i class="fas fa-boxes"></i>
+            <p>Aucun asset trouvé</p>
+          </div>
         </div>
-    </main>
-    <div class="modal" id="assetDetailModal">
-        <div class="modal-overlay"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="detailModalTitle">Détail de l'asset</h2>
-                <button class="modal-close" id="closeDetailModal">&times;</button>
-            </div>
-            <div class="modal-body" id="detailModalBody"></div>
-        </div>
+      </div>
     </div>
-    <div class="modal" id="assetFormModal">
-        <div class="modal-overlay"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="formModalTitle">Nouvel asset</h2>
-                <button class="modal-close" id="closeFormModal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="assetForm">
-                    <input type="hidden" id="assetId">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="assetName">Nom</label>
-                            <input type="text" id="assetName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="assetTag">Asset Tag</label>
-                            <input type="text" id="assetTag" placeholder="Généré automatiquement" readonly>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="assetSerial">Numéro de série</label>
-                            <input type="text" id="assetSerial">
-                        </div>
-                        <div class="form-group">
-                            <label for="assetType">Type</label>
-                            <select id="assetType" required></select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="assetBrand">Marque</label>
-                            <input type="text" id="assetBrand">
-                        </div>
-                        <div class="form-group">
-                            <label for="assetModel">Modèle</label>
-                            <input type="text" id="assetModel">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="assetPurchaseDate">Date d'achat</label>
-                            <input type="date" id="assetPurchaseDate">
-                        </div>
-                        <div class="form-group">
-                            <label for="assetWarrantyEnd">Fin de garantie</label>
-                            <input type="date" id="assetWarrantyEnd">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="assetLocation">Emplacement</label>
-                            <select id="assetLocation"></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="assetStatus">Statut</label>
-                            <select id="assetStatus" required>
-                                <option value="available">Disponible</option>
-                                <option value="in_use">En utilisation</option>
-                                <option value="repair">En réparation</option>
-                                <option value="retired">Retiré</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="assetNotes">Notes</label>
-                        <textarea id="assetNotes" rows="3"></textarea>
-                    </div>
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-secondary" id="cancelFormBtn">Annuler</button>
-                        <button type="submit" class="btn btn-primary">Enregistrer</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+  </div>
+
+  <div class="modal-overlay" id="assetDetailModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="detailModalTitle">Détail de l'asset</h2>
+        <button class="modal-close" id="closeDetailModal">&times;</button>
+      </div>
+      <div class="modal-body" id="detailModalBody"></div>
     </div>
-    <div class="modal" id="historyModal">
-        <div class="modal-overlay"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="historyModalTitle">Historique</h2>
-                <button class="modal-close" id="closeHistoryModal">&times;</button>
-            </div>
-            <div class="modal-body" id="historyModalBody"></div>
+  </div>
+
+  <div class="modal-overlay" id="assetFormModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="formModalTitle">Nouvel asset</h2>
+        <button class="modal-close" id="closeFormModal">&times;</button>
+      </div>
+      <form id="assetForm">
+        <input type="hidden" id="assetId">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="assetName">Nom</label>
+            <input type="text" id="assetName" required>
+          </div>
+          <div class="form-group">
+            <label for="assetTag">Asset Tag</label>
+            <input type="text" id="assetTag" placeholder="Généré automatiquement" readonly>
+          </div>
         </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="assetSerial">Numéro de série</label>
+            <input type="text" id="assetSerial">
+          </div>
+          <div class="form-group">
+            <label for="assetType">Type</label>
+            <select id="assetType" required></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="assetBrand">Marque</label>
+            <input type="text" id="assetBrand">
+          </div>
+          <div class="form-group">
+            <label for="assetModel">Modèle</label>
+            <input type="text" id="assetModel">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="assetPurchaseDate">Date d'achat</label>
+            <input type="date" id="assetPurchaseDate">
+          </div>
+          <div class="form-group">
+            <label for="assetWarrantyEnd">Fin de garantie</label>
+            <input type="date" id="assetWarrantyEnd">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="assetLocation">Emplacement</label>
+            <select id="assetLocation"></select>
+          </div>
+          <div class="form-group">
+            <label for="assetStatus">Statut</label>
+            <select id="assetStatus" required>
+              <option value="available">Disponible</option>
+              <option value="in_use">En utilisation</option>
+              <option value="repair">En réparation</option>
+              <option value="retired">Retiré</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="assetNotes">Notes</label>
+          <textarea id="assetNotes" rows="3"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="cancelFormBtn">Annuler</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Enregistrer</button>
+        </div>
+      </form>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="assets/js/config.js"></script>
-    <script src="assets/js/db.js"></script>
-    <script src="assets/js/auth.js"></script>
-    <script src="assets/js/nav.js"></script>
-    <script src="assets/js/inventory.js"></script>
+  </div>
+
+  <div class="modal-overlay" id="historyModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="historyModalTitle">Historique</h2>
+        <button class="modal-close" id="closeHistoryModal">&times;</button>
+      </div>
+      <div class="modal-body" id="historyModalBody"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/db.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/nav.js"></script>
+  <script src="assets/js/inventory.js"></script>
 </body>
 </html>
