@@ -7,6 +7,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         await initAuth();
         if (!requireAuth()) return;
         initNav();
+
+        const userMenuBtn = document.getElementById('userAvatarBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        userMenuBtn.addEventListener('click', () => userDropdown.classList.toggle('open'));
+        document.addEventListener('click', (e) => {
+            if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) userDropdown.classList.remove('open');
+        });
+
         await initInventory();
     } catch (err) {
         console.error('Init error:', err);
@@ -395,7 +403,9 @@ function bindModalEvents() {
     document.getElementById('cancelFormBtn').addEventListener('click', () => closeModal('assetFormModal'));
 
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
-        overlay.addEventListener('click', closeAllModals);
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeAllModals();
+        });
     });
 
     document.addEventListener('keydown', e => {
@@ -424,13 +434,13 @@ function bindFormEvents() {
 }
 
 function openModal(id) {
-    document.getElementById(id).classList.add('active');
+    document.getElementById(id).classList.add('open');
 }
 
 function closeModal(id) {
-    document.getElementById(id).classList.remove('active');
+    document.getElementById(id).classList.remove('open');
 }
 
 function closeAllModals() {
-    document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
 }
