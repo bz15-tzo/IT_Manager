@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OnboardIT - Flux IT des recrutements</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Affiche toute erreur JavaScript à l'écran (évite les pages blanches) -->
+  <script>
+    window.__showFatal = function (msg) {
+      var el = document.getElementById("initError");
+      if (el) {
+        el.textContent = msg;
+        el.classList.remove("hidden");
+        document.getElementById("authView").classList.remove("hidden");
+        document.getElementById("appView").classList.add("hidden");
+      }
+    };
+    window.addEventListener("error", function (e) {
+      var msg = (e.message || (e.error && e.error.message) || "inconnue");
+      // "Script error." = erreur masquée d'un script CDN (CORS) : non exploitable, on l'ignore.
+      if (msg === "Script error.") return;
+      window.__showFatal("Erreur JavaScript : " + msg);
+    });
+    window.addEventListener("unhandledrejection", function (e) {
+      var msg = ((e.reason && e.reason.message) || e.reason || "inconnue");
+      if (msg === "Script error.") return;
+      window.__showFatal("Erreur JavaScript : " + msg);
+    });
+    setTimeout(function () {
+      var authView = document.getElementById("authView");
+      if (authView && authView.classList.contains("hidden") && !window.__recruititInitDone) {
+        window.__showFatal("L'application ne s'est pas initialisée. Ouvrez la console (F12) pour voir l'erreur, ou vérifiez que js/config.js est rempli.");
+      }
+    }, 4000);
+  </script>
+
+  <!-- ==================== VUE AUTH ==================== -->
+  <div id="authView" class="auth-view hidden">
+      <div class="auth-card">
+      <div class="auth-logo">
+        <img src="assets/logo.svg" class="logo-img" alt="OnboardIT">
+        <h1>OnboardIT</h1>
+        <p>Flux IT complet de vos recrutements,<br>de la demande RH à l'onboarding.</p>
+      </div>
+
+      <div id="initError" class="form-error hidden"></div>
+
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Connexion</button>
+        <button class="auth-tab" data-tab="signup">Inscription</button>
+      </div>
+
+      <!-- Connexion -->
+      <form id="loginForm" class="auth-form">
+        <div class="field">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" required placeholder="prenom@entreprise.com">
+        </div>
+        <div class="field">
+          <label for="loginPassword">Mot de passe</label>
+          <input type="password" id="loginPassword" required placeholder="••••••••">
+        </div>
+        <div id="loginError" class="form-error hidden"></div>
+        <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
+      </form>
+
+      <!-- Inscription -->
+      <form id="signupForm" class="auth-form hidden">
+        <div class="field">
+          <label for="signupName">Nom complet</label>
+          <input type="text" id="signupName" required placeholder="Jean Dupont">
+        </div>
+        <div class="field">
+          <label for="signupEmail">Email</label>
+          <input type="email" id="signupEmail" required placeholder="prenom@entreprise.com">
+        </div>
+        <div class="field">
+          <label for="signupPassword">Mot de passe</label>
+          <input type="password" id="signupPassword" required minlength="6" placeholder="6 caractères minimum">
+        </div>
+        <div class="field">
+          <label for="signupRole">Rôle</label>
+          <select id="signupRole">
+            <option value="IT">IT</option>
+            <option value="RH">RH</option>
+            <option value="MANAGER">Manager</option>
+            <option value="ADMIN">Admin</option>
+          </select>
+        </div>
+        <div id="signupError" class="form-error hidden"></div>
+        <button type="submit" class="btn btn-primary btn-block">Créer le compte</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== APPLICATION ==================== -->
+  <div id="appView" class="app hidden">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <img src="assets/logo.svg" class="logo-img small" alt="OnboardIT">
+        <span>OnboardIT</span>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-view="dashboard">
+          <span class="nav-icon">📊</span> Tableau de bord
+        </button>
+        <button class="nav-item" data-view="list">
+          <span class="nav-icon">📋</span> Dossiers
+        </button>
+        <button class="nav-item" data-view="outboard">
+          <span class="nav-icon">📤</span> Outboarding
+        </button>
+        <button class="nav-item hidden" data-view="admin">
+          <span class="nav-icon">🛠️</span> Admin
+        </button>
+        <button class="nav-item" data-view="about">
+          <span class="nav-icon">ℹ️</span> À propos
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <div class="user-meta">
+            <strong id="userName">—</strong>
+            <span class="user-role" id="userRole">—</span>
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-block" id="logoutBtn">🚪 Se déconnecter</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <!-- ============ VUE DASHBOARD (KANBAN) ============ -->
+      <section id="view-dashboard" class="view">
+        <header class="page-header">
+          <div>
+            <h2>Tableau de bord</h2>
+            <p id="dashSubtitle">Suivi du flux d'intégration en temps réel</p>
+          </div>
+          <button class="btn btn-refresh" id="refreshBtn"><span class="refresh-icon">🔄</span> Actualiser</button>
+        </header>
+        <div id="dashStats" class="stats-row"></div>
+        <div id="kanban" class="kanban"></div>
+      </section>
+
+      <!-- ============ VUE LISTE ============ -->
+      <section id="view-list" class="view hidden">
+        <header class="page-header">
+          <div>
+            <h2 id="listTitle">Dossiers de recrutement</h2>
+            <p id="listSubtitle">Tous les dossiers d'onboarding</p>
+          </div>
+          <div class="toolbar">
+            <button class="btn btn-primary" id="openCreateModal">＋ Nouveau dossier</button>
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher un candidat...">
+            <select id="filterStep" class="filter-select">
+              <option value="">Toutes les étapes</option>
+            </select>
+            <button class="btn btn-ghost" id="exportExcelBtn">📊 Excel</button>
+            <button class="btn btn-ghost" id="exportPdfBtn">📄 PDF</button>
+          </div>
+        </header>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Candidat</th>
+                <th>Poste</th>
+                <th>Département</th>
+                <th id="dateColHeader">Date d'intégration</th>
+                <th>Étape</th>
+                <th>Statut</th>
+                <th>Priorité</th>
+                <th>Progression</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ VUE À PROPOS ============ -->
+      <section id="view-about" class="view hidden">
+        <header class="page-header">
+          <div><h2>À propos</h2></div>
+        </header>
+        <div class="card about-card">
+          <h3><img src="assets/logo.svg" class="logo-img small" alt="" style="vertical-align:middle;margin-right:8px">OnboardIT</h3>
+          <p>
+            Cette application permet de gérer le <strong>cycle complet d'intégration et de départ</strong> :
+            de la réception de la demande RH jusqu'à l'onboarding, et de la départ jusqu'à la clôture administrative (outboarding).
+          </p>
+          <h4>Onboarding — 7 étapes</h4>
+          <ol id="aboutSteps" class="about-steps"></ol>
+          <h4>Outboarding — 6 étapes</h4>
+          <ol id="aboutOutSteps" class="about-steps"></ol>
+          <h4>Les rôles</h4>
+          <ul class="about-roles">
+            <li><span class="pill pill-it">IT</span> Prépare le poste, crée les comptes, fait avancer les étapes, révoque les accès, récupère le matériel.</li>
+            <li><span class="pill pill-rh">RH</span> Crée, modifie ou supprime les dossiers (onboarding/outboarding), informe l'IT du besoin et clôture le dossier.</li>
+            <li><span class="pill pill-manager">MANAGER</span> Suit l'onboarding, gère le transfert de connaissances et l'entretien de sortie.</li>
+            <li><span class="pill pill-admin">ADMIN</span> Lecture seule des dossiers, tâches et flux + gestion des listes. Création, modification, suppression et suspension : RH uniquement.</li>
+          </ul>
+        </div>
+      </section>
+      <!-- ============ VUE ADMIN ============ -->
+      <section id="view-admin" class="view hidden">
+        <header class="page-header">
+          <div>
+            <h2>Administration</h2>
+            <p>Gérez les listes proposées dans les formulaires (départements, matériel)</p>
+          </div>
+        </header>
+
+        <div class="admin-grid">
+          <div class="panel admin-card">
+            <h3>🏢 Départements</h3>
+            <p class="admin-hint">Valeurs proposées dans la liste « Département » des formulaires.</p>
+            <div id="adminDepartmentsList" class="admin-list"></div>
+            <form class="admin-form" id="adminAddDeptForm">
+              <input type="text" id="adminDeptInput" placeholder="Ex : Logistique">
+              <button class="btn btn-primary btn-sm" type="submit">＋ Ajouter</button>
+            </form>
+          </div>
+
+          <div class="card admin-card">
+            <h3>📦 Matériel</h3>
+            <p class="admin-hint">Éléments proposés dans « Matériel nécessaire » à la création d'un dossier.</p>
+            <div id="adminMaterialsList" class="admin-list"></div>
+            <form class="admin-form" id="adminAddMatForm">
+              <input type="text" id="adminMatInput" placeholder="Ex : Téléphone fixe">
+              <button class="btn btn-primary btn-sm" type="submit">＋ Ajouter</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ==================== MODAL CRÉATION ==================== -->
+  <div id="createModal" class="modal hidden">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Nouveau dossier de recrutement</h3>
+        <button class="modal-close" data-close-modal>✕</button>
+      </div>
+      <form id="createForm" class="modal-body">
+        <div class="field">
+          <label>Type de dossier *</label>
+          <select id="fCycle" required>
+            <option value="onboarding">📥 Onboarding (arrivée)</option>
+            <option value="outboarding">📤 Outboarding (départ)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Prénom du candidat *</label>
+          <input type="text" id="fFirstName" required placeholder="Jean">
+        </div>
+        <div class="field">
+          <label>Nom du candidat *</label>
+          <input type="text" id="fLastName" required placeholder="Dupont">
+        </div>
+        <div class="field">
+          <label>Email professionnel *</label>
+          <input type="email" id="fEmail" required placeholder="jean.dupont@entreprise.com">
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Poste *</label>
+            <input type="text" id="fPosition" required placeholder="Développeur Full-Stack">
+          </div>
+          <div class="field">
+            <label>Département</label>
+            <select id="fDepartment"></select>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field" id="fStartDateField">
+            <label>Date d'intégration</label>
+            <input type="date" id="fStartDate">
+          </div>
+          <div class="field">
+            <label>Priorité</label>
+            <select id="fPriority">
+              <option value="normale">Normale</option>
+              <option value="haute">Haute</option>
+              <option value="basse">Basse</option>
+            </select>
+          </div>
+        </div>
+        <div class="outboard-fields hidden">
+          <div class="grid-2">
+            <div class="field">
+              <label>Date de départ</label>
+              <input type="date" id="fDepartureDate">
+            </div>
+            <div class="field">
+              <label>Raison du départ</label>
+              <select id="fDepartureReason"></select>
+            </div>
+          </div>
+          <div class="field">
+            <label>Lier à un dossier d'onboarding (optionnel)</label>
+            <select id="fLinkedOnboarding"><option value="">— Aucun lien —</option></select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Manager (nom)</label>
+          <input type="text" id="fManager" placeholder="Nom du manager">
+        </div>
+        <div class="field">
+          <label>Matériel nécessaire</label>
+          <div id="fMaterialList" class="material-grid"></div>
+        </div>
+        <div id="createError" class="form-error hidden"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" data-close-modal>Annuler</button>
+          <button type="submit" class="btn btn-primary">Créer le dossier</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL MODIFICATION ==================== -->
+  <div id="editModal" class="modal hidden">
+    <div class="modal-backdrop" data-close-edit></div>
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="editTitle">Modifier le dossier</h3>
+        <button class="modal-close" data-close-edit>✕</button>
+      </div>
+      <form id="editForm" class="modal-body">
+        <div class="field">
+          <label>Prénom du candidat *</label>
+          <input type="text" id="efFirstName" required placeholder="Jean">
+        </div>
+        <div class="field">
+          <label>Nom du candidat *</label>
+          <input type="text" id="efLastName" required placeholder="Dupont">
+        </div>
+        <div class="field">
+          <label>Email professionnel *</label>
+          <input type="email" id="efEmail" required placeholder="jean.dupont@entreprise.com">
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Poste *</label>
+            <input type="text" id="efPosition" required placeholder="Développeur Full-Stack">
+          </div>
+          <div class="field">
+            <label>Département</label>
+            <select id="efDepartment"></select>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Date d'intégration</label>
+            <input type="date" id="efStartDate">
+          </div>
+          <div class="field">
+            <label>Priorité</label>
+            <select id="efPriority">
+              <option value="normale">Normale</option>
+              <option value="haute">Haute</option>
+              <option value="basse">Basse</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Manager (nom)</label>
+          <input type="text" id="efManager" placeholder="Nom du manager">
+        </div>
+        <div class="field">
+          <label>Matériel nécessaire</label>
+          <div id="efMaterialList" class="material-grid"></div>
+        </div>
+        <div class="field">
+          <label>Notes</label>
+          <textarea id="efNotes" rows="3" placeholder="Informations complémentaires..."></textarea>
+        </div>
+        <div id="editError" class="form-error hidden"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" data-close-edit>Annuler</button>
+          <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL DÉTAIL ==================== -->
+  <div id="detailModal" class="modal hidden">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card modal-card-lg">
+      <div class="modal-header">
+        <h3 id="detailTitle">Détail du dossier</h3>
+        <button class="modal-close" data-close-modal>✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="detailContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TOAST ==================== -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Supabase JS v2 (CDN) -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    crossorigin="anonymous"
+    onerror="window.__supabaseCdnFailed = true; console.error('OnboardIT : CDN supabase-js injoignable (vérifiez la connexion)');">
+  </script>
+  <!-- Export Excel / PDF (scripts optionnels : leur échec ne bloque pas l'app) -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"
+    crossorigin="anonymous"
+    onerror="window.__exportLibsReady = false; console.warn('OnboardIT : xlsx non chargé, export Excel désactivé');">
+  </script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+    crossorigin="anonymous"
+    onerror="window.__exportLibsReady = false; console.warn('OnboardIT : jsPDF non chargé, export PDF désactivé');">
+  </script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"
+    crossorigin="anonymous"
+    onerror="window.__exportLibsReady = false; console.warn('OnboardIT : autotable non chargé, export PDF désactivé');">
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/client.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
